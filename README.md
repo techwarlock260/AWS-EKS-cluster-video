@@ -35,13 +35,13 @@
 
 # Create the cluster:
 
-   eksctl create cluster \
-               --name myEKS \
-               --version 1.21 \
-               --region us-west-1 \
-               --nodegroup-name worker-nodes \
-               --node-type t3.small \
-               --nodes 2
+     eksctl create cluster \
+                 --name myEKS \
+                 --version 1.21 \
+                 --region us-west-1 \
+                 --nodegroup-name worker-nodes \
+                 --node-type t3.small \
+                 --nodes 2
             
 # Delete the cluster:
 
