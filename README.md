@@ -6,11 +6,11 @@
 
 # Install AWS CLI tool:
 
-    * DOWNLOAD:: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
-    * INSTALL:: apt install unzip 
-    * RUN:: unzip awscliv2.zip 
-    * INSTALL:: ./aws/install
-    * VERIFY:  aws --version 
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
+    apt install unzip 
+    unzip awscliv2.zip 
+    ./aws/install
+    aws --version 
 
 
 # Install Kubernetes Kubectl:
