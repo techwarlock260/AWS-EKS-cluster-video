@@ -1,0 +1,56 @@
+# Cluster verification commands
+eksctl get cluster
+kubectl get all
+kubectl get ns
+
+# Installing metric server
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl get deployment metrics-server -n kube-system
+kubectl get --raw /metrics
+
+# Prometheus deployment
+kubectl create namespace prometheus
+kubectl get ns
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm install prometheus prometheus-community/prometheus \
+    --namespace prometheus \
+    --set alertmanager.persistentVolume.storageClass="gp2" \
+    --set server.persistentVolume.storageClass="gp2"
+
+kubectl get all -n prometheus
+kubectl --namespace=prometheus port-forward deploy/prometheus-server 9090
+
+
+# Installing Grafana
+kubectl create namespace grafana
+kubectl get ns
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm install grafana grafana/grafana \
+    --namespace grafana \
+    --set persistence.storageClassName="gp2" \
+    --set persistence.enabled=true \
+    --set adminPassword='EKS!sAWSome' \
+    --values grafana.yaml \
+    --set service.type=LoadBalancer
+
+kubectl get all -n grafana
+
+#Get ELB address
+export ELB=$(kubectl get svc -n grafana grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+echo "http://$ELB"
+
+# login usr= "admin"
+# Passwd: get password
+kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+
+# Cleanup
+
+helm uninstall prometheus --namespace prometheus
+kubectl delete ns prometheus
+
+helm uninstall grafana --namespace grafana
+kubectl delete ns grafana
